@@ -6,6 +6,12 @@ struct Monst {
     power: i32,
     ac: i32,
     glyph: char,
+    location: Position,
+}
+
+struct Position {
+    x: i32,
+    y: i32,
 }
 
 fn main() {
@@ -20,6 +26,7 @@ fn main() {
         power: 1,
         ac: 10,
         glyph: '@',
+        location: Position { x: 2, y: 3 },
     };
 
     //window.resize(10, 20);
