@@ -1,4 +1,8 @@
 extern crate pancurses;
+mod items;
+mod map;
+use items::Item;
+use map::*;
 use pancurses::{endwin, initscr};
 
 struct Monst {
@@ -7,11 +11,6 @@ struct Monst {
     ac: i32,
     glyph: char,
     location: Position,
-}
-
-struct Position {
-    x: i32,
-    y: i32,
 }
 
 fn main() {
@@ -30,11 +29,10 @@ fn main() {
     };
 
     //window.resize(10, 20);
-    subwindow.printw("here is a box");
-
-    subwindow.border('|', '|', '-', '-', '+', '+', '+', '+');
-    // subwindow2.border('|', '|', '-', '-', '+', '+', '+', '+');
-
+    let player_window = window.derwin(5, 80, 23, 2).unwrap();
+    subwindow.border('|', '|', '-', '-', '-', '-', '-', '-');
+    player_window.border('|', '|', '-', '-', '+', '+', '+', '+');
+    subwindow.mvaddch(player.location.x, player.location.y, player.glyph);
     window.border('|', '|', '-', '-', '+', '+', '+', '+');
 
     window.getch();
