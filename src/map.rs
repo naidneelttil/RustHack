@@ -11,9 +11,9 @@ enum FeatureType {
 }
 
 pub struct DungeonFeature {
-    catagory: FeatureType,
-    color: i32,
-    glyph: char,
+    pub catagory: FeatureType,
+    pub color: i32,
+    pub glyph: char,
 }
 
 enum Positionable {
@@ -29,13 +29,13 @@ pub struct Position {
 
 // this is the stack that each tile of the floor is made of
 pub struct FloorStack {
-    stack: Vec<Positionable>,
-    location: Position,
+    pub stack: Vec<Positionable>,
+    pub location: Position,
 }
 
 pub struct Level {
-    depth: i32,
-    map: Vec<FloorStack>,
-    window: Window,
-    annotations: String,
+    pub depth: i32,
+    pub map: Vec<FloorStack>,
+    pub window: Window,
+    pub annotations: String,
 }
