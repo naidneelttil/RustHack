@@ -2,23 +2,23 @@ extern crate pancurses;
 mod items;
 mod map;
 mod monst;
+use core::array::from_fn;
 use items::Item;
 use map::*;
 use monst::Monst;
 use pancurses::{endwin, initscr};
-
 struct GameState {
     dungeon: Vec<map::Level>,
 }
 
 fn main() {
-    let currentState = GameState {
+    let current_state = GameState {
         dungeon: Vec::new(),
     };
 
     let window = initscr();
     window.printw("Hello RustHack");
-    window.refresh();
+    //   window.refresh();
     let subwindow = window.derwin(20, 80, 2, 2).unwrap();
 
     // construct the first level of the game
@@ -26,7 +26,7 @@ fn main() {
         depth: 0,
         window: subwindow,
         annotations: String::new(),
-        map: [[FloorStack; 80]; 20],
+        map: from_fn(|x| from_fn(|y| FloorStack { stack: Vec::new() })),
     };
     //let subwindow2 = window.subwin(20, 30, 10, 65).unwrap();
 

@@ -1,3 +1,5 @@
+use crate::map::Position;
+use crate::Item;
 pub struct Monst {
     pub health: i32,
     pub power: i32,
