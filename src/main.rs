@@ -1,18 +1,11 @@
 extern crate pancurses;
 mod items;
 mod map;
+mod monst;
 use items::Item;
 use map::*;
+use monst::Monst;
 use pancurses::{endwin, initscr};
-
-struct Monst {
-    health: i32,
-    power: i32,
-    ac: i32,
-    inventory: Vec<Item>,
-    glyph: char,
-    location: Position,
-}
 
 struct GameState {
     dungeon: Vec<map::Level>,
@@ -33,7 +26,7 @@ fn main() {
         depth: 0,
         window: subwindow,
         annotations: String::new(),
-        map: Vec::new(),
+        map: [[FloorStack; 80]; 20],
     };
     //let subwindow2 = window.subwin(20, 30, 10, 65).unwrap();
 
@@ -48,10 +41,12 @@ fn main() {
 
     //window.resize(10, 20);
     let player_window = window.derwin(5, 80, 23, 2).unwrap();
+
     first_level
         .window
         .border('|', '|', '-', '-', '-', '-', '-', '-');
     player_window.border('|', '|', '-', '-', '+', '+', '+', '+');
+
     first_level
         .window
         .mvaddch(player.location.x, player.location.y, player.glyph);

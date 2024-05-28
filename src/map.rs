@@ -1,4 +1,6 @@
 extern crate pancurses;
+use crate::items::Item;
+use crate::monst::Monst;
 use pancurses::Window;
 
 enum FeatureType {
@@ -16,10 +18,11 @@ pub struct DungeonFeature {
     pub glyph: char,
 }
 
-enum Positionable {
+pub enum Positionable {
     FeatureType,
     Item,
     Monst,
+    None,
 }
 
 pub struct Position {
@@ -30,12 +33,22 @@ pub struct Position {
 // this is the stack that each tile of the floor is made of
 pub struct FloorStack {
     pub stack: Vec<Positionable>,
-    pub location: Position,
+    //pub location: Position,
 }
 
 pub struct Level {
     pub depth: i32,
-    pub map: Vec<FloorStack>,
+    pub map: [[FloorStack; 80]; 20],
     pub window: Window,
     pub annotations: String,
+}
+
+impl Level {
+    fn populate_map(&mut self) {
+        for i in 0..80 {
+            for j in 0..20 {
+                self.map[i][j] = FloorStack { stack: Vec::new() };
+            }
+        }
+    }
 }
