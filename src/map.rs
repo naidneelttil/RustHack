@@ -18,6 +18,7 @@ pub struct DungeonFeature {
     pub glyph: char,
 }
 
+#[derive(Debug)]
 pub enum Positionable {
     FeatureType,
     Item,
@@ -31,24 +32,16 @@ pub struct Position {
 }
 
 // this is the stack that each tile of the floor is made of
+#[derive(Debug)]
 pub struct FloorStack {
     pub stack: Vec<Positionable>,
     //pub location: Position,
 }
 
+#[derive(Debug)]
 pub struct Level {
     pub depth: i32,
     pub map: [[FloorStack; 80]; 20],
     pub window: Window,
     pub annotations: String,
-}
-
-impl Level {
-    fn populate_map(&mut self) {
-        for i in 0..80 {
-            for j in 0..20 {
-                self.map[i][j] = FloorStack { stack: Vec::new() };
-            }
-        }
-    }
 }

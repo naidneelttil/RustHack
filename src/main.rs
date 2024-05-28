@@ -56,4 +56,8 @@ fn main() {
 
     //TODO see if you can add a glyph player that can walk around the screen
     endwin();
+    println!(
+        "this is the struct representation of the first level {:#?}",
+        first_level
+    );
 }
