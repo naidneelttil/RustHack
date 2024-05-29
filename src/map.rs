@@ -3,6 +3,7 @@ use crate::items::Item;
 use crate::monst::Monst;
 use pancurses::Window;
 
+#[derive(Debug)]
 enum FeatureType {
     Water,
     Lava,
@@ -12,6 +13,7 @@ enum FeatureType {
     Altar,
 }
 
+#[derive(Debug)]
 pub struct DungeonFeature {
     pub catagory: FeatureType,
     pub color: i32,
@@ -20,12 +22,13 @@ pub struct DungeonFeature {
 
 #[derive(Debug)]
 pub enum Positionable {
-    FeatureType,
-    Item,
-    Monst,
+    Feature(DungeonFeature),
+    Object(Item),
+    Monster(Monst),
     None,
 }
 
+#[derive(Debug)]
 pub struct Position {
     pub x: i32,
     pub y: i32,
