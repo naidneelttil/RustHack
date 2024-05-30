@@ -1,7 +1,6 @@
 extern crate pancurses;
 use crate::items::Item;
 use crate::monst::Monst;
-use pancurses::Window;
 
 #[derive(Debug)]
 enum FeatureType {
@@ -18,6 +17,7 @@ pub struct DungeonFeature {
     pub catagory: FeatureType,
     pub color: i32,
     pub glyph: char,
+    pub location: Position,
 }
 
 #[derive(Debug)]
@@ -34,17 +34,10 @@ pub struct Position {
     pub y: i32,
 }
 
-// this is the stack that each tile of the floor is made of
-#[derive(Debug)]
-pub struct FloorStack {
-    pub stack: Vec<Positionable>,
-    //pub location: Position,
-}
-
 #[derive(Debug)]
 pub struct Level {
     pub depth: i32,
-    pub map: [[FloorStack; 80]; 20],
-    pub window: Window,
+    pub map: [[char; 80]; 20],
     pub annotations: String,
+    pub objects: Vec<Positionable>,
 }
