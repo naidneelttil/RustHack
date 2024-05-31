@@ -7,8 +7,8 @@ use map::*;
 use monst::Monst;
 use pancurses::{endwin, initscr};
 
-struct GameState {
-    dungeon: Vec<map::Level>,
+struct GameState<'a> {
+    dungeon: Vec<map::Level<'a>>,
 }
 
 fn main() {
@@ -22,17 +22,20 @@ fn main() {
     let window = initscr();
     let subwindow = window.derwin(20, 80, 2, 2).unwrap();
     let player_window = window.derwin(5, 80, 23, 2).unwrap();
+    let message_window = window.derwin(1, 80, 1, 1).unwrap();
 
     // specify the boarders for each of the player windows
+    window.border('|', '|', '-', '-', '+', '+', '+', '+');
     subwindow.border('|', '|', '-', '-', '-', '-', '-', '-');
     player_window.border('|', '|', '-', '-', '+', '+', '+', '+');
-    window.border('|', '|', '-', '-', '+', '+', '+', '+');
+    message_window.border('|', '|', '-', '-', '+', '+', '+', '+');
 
     // construct the first level of the game with dots on every square
     let mut first_level = Level {
         depth: 0,
         annotations: String::new(),
         map: [['.'; 80]; 20],
+        map_obj: [[&Vec::new(); 80]; 20],
         objects: Vec::new(),
     };
 
@@ -46,6 +49,7 @@ fn main() {
         location: Position { x: 2, y: 3 },
     };
 
+    //TODO: this should also be a function that takes objects and stores it in the current level
     // put the player glyph on the first_level map
     first_level.map[player.location.x as usize][player.location.y as usize] = player.glyph;
 
@@ -57,11 +61,24 @@ fn main() {
     subwindow.mvaddch(player.location.x, player.location.y, player.glyph);
 
     //TODO: this has to be a loop of getting the player's input and altering the game accordingly
-    window.getch();
+    let input = window.getch();
 
     endwin();
+    //debugging
     println!(
         "this is the struct representation of the first level {:#?}",
         current_state.dungeon.get(0)
     );
+}
+
+fn mvplayer(input: char, level: &mut Level, player: &mut Monst) {
+    match input {
+        // remove player from former location
+        // level.map[player.location.x as usize]
+        'h' => player.location.x -= 1,
+        'l' => player.location.x += 1,
+        'j' => player.location.y -= 1,
+        'k' => player.location.x += 1,
+        _ => (),
+    }
 }
