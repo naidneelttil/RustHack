@@ -21,9 +21,9 @@ fn main() {
     // initialize the window and and make the 80x20 game window
     // and make the window in which the player's stats is shown
     let window = initscr();
-    let subwindow = window.derwin(20, 80, 2, 2).unwrap();
-    let player_window = window.derwin(5, 80, 23, 2).unwrap();
-    let message_window = window.derwin(1, 80, 1, 1).unwrap();
+    let subwindow = window.derwin(20, 80, 5, 2).unwrap();
+    let player_window = window.derwin(5, 80, 25, 2).unwrap();
+    let message_window = window.derwin(3, 80, 1, 2).unwrap();
 
     // specify the boarders for each of the player windows
     window.border('|', '|', '-', '-', '+', '+', '+', '+');
