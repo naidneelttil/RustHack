@@ -35,11 +35,11 @@ pub struct Position {
 }
 
 #[derive(Debug)]
-pub struct Level<'a> {
+pub struct Level {
     pub depth: i32,
     pub map: [[char; 80]; 20],
 
-    pub map_obj: [[&'a Vec<Positionable>; 80]; 20],
+    pub map_obj: [[Vec<Positionable>; 80]; 20],
 
     pub annotations: String,
     pub objects: Vec<Positionable>,

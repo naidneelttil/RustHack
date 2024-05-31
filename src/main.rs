@@ -2,13 +2,14 @@ extern crate pancurses;
 mod items;
 mod map;
 mod monst;
+use arr_macro::arr;
 use items::Item;
 use map::*;
 use monst::Monst;
 use pancurses::{endwin, initscr};
 
-struct GameState<'a> {
-    dungeon: Vec<map::Level<'a>>,
+struct GameState {
+    dungeon: Vec<map::Level>,
 }
 
 fn main() {
@@ -35,7 +36,7 @@ fn main() {
         depth: 0,
         annotations: String::new(),
         map: [['.'; 80]; 20],
-        map_obj: [[&Vec::new(); 80]; 20],
+        map_obj: arr![arr![Vec::new(); 80]; 20],
         objects: Vec::new(),
     };
 
