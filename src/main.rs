@@ -6,7 +6,7 @@ use arr_macro::arr;
 use items::Item;
 use map::*;
 use monst::Monst;
-use pancurses::{endwin, initscr};
+use pancurses::{endwin, initscr, Window};
 
 struct GameState {
     dungeon: Vec<map::Level>,
@@ -59,10 +59,11 @@ fn main() {
 
     // TODO: this is supposed to be a function that takes the current level and prints it to the
     // screen,player's glyph. change this eventually.
+    populate_board(&subwindow, current_state.dungeon.get(0).unwrap());
     subwindow.mvaddch(player.location.x, player.location.y, player.glyph);
 
     //TODO: this has to be a loop of getting the player's input and altering the game accordingly
-    let input = window.getch();
+    let input = window.getch().unwrap();
 
     endwin();
     //debugging
@@ -70,6 +71,7 @@ fn main() {
         "this is the struct representation of the first level {:#?}",
         current_state.dungeon.get(0)
     );
+    println!("this is the input {:#?}", input);
 }
 
 fn mvplayer(input: char, level: &mut Level, player: &mut Monst) {
@@ -82,4 +84,13 @@ fn mvplayer(input: char, level: &mut Level, player: &mut Monst) {
         'k' => player.location.x += 1,
         _ => (),
     }
+}
+
+fn populate_board(subwindow: &Window, level: &Level) {
+    for i in 1..19 {
+        for j in 1..79 {
+            subwindow.mvaddch(i, j, level.map[i as usize][j as usize]);
+        }
+    }
+    //subwindow.mvaddch(player.location.x, player.location.y, player.glyph);
 }
