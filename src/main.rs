@@ -105,15 +105,16 @@ fn main() {
     println!("this is the input {:#?}", input);
 }
 
-fn populate_allFloor(subwindow: &Window, level: &Level) {
-    let floor = DungeonFeature {
-        catagory: map::FeatureType::RoomFloor,
-        color: 0,
-        glyph: '.',
-        location: Position(0, 0),
-    };
+fn populate_all_floor(subwindow: &Window, level: &mut Level) {
     for i in 1..19 {
         for j in 1..79 {
+            let floor = DungeonFeature {
+                catagory: map::FeatureType::RoomFloor,
+                color: 0,
+                glyph: '.',
+                location: Position { x: i, y: j },
+            };
+
             level.map_obj[i as usize][j as usize].push(Positionable::Feature(floor));
         }
     }
