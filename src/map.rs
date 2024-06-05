@@ -3,13 +3,14 @@ use crate::items::Item;
 use crate::monst::Monst;
 
 #[derive(Debug)]
-enum FeatureType {
+pub enum FeatureType {
     Water,
     Lava,
     Tree,
     Wall,
     Corridor,
     Altar,
+    RoomFloor,
 }
 
 #[derive(Debug)]
