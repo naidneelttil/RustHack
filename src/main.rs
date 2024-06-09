@@ -1,130 +1,79 @@
 extern crate pancurses;
-mod items;
-mod map;
-mod monst;
-use arr_macro::arr;
-use items::Item;
-use map::*;
-use monst::Monst;
-use pancurses::{endwin, initscr, newwin, Input::Character, Window};
-
-struct GameState {
-    dungeon: Vec<map::Level>,
-}
+use pancurses::{endwin, initscr, newwin, Input};
 
 fn main() {
     // initialized the current game state, making the dungeon
-    let mut current_state = GameState {
-        dungeon: Vec::new(),
-    };
-
     // initialize the window and and make the 80x20 game window
     // and make the window in which the player's stats is shown
     let window = initscr();
     pancurses::noecho();
     window.refresh();
-    let subwindow = newwin(20, 80, 5, 2);
-    let player_window = newwin(5, 80, 25, 2);
-    let message_window = newwin(3, 80, 1, 2);
+    let mut subwindow = newwin(20, 80, 5, 2);
+    let mut player_window = newwin(5, 80, 25, 2);
+    let mut message_window = newwin(3, 80, 1, 2);
 
-    subwindow.refresh();
-    player_window.refresh();
-    message_window.refresh();
-    //let subwindow = pancurses::derwin(20, 80, 5, 2).unwrap;
-    //let player_window = window.derwin(5, 80, 25, 2).unwrap();
-    //let message_window = window.derwin(3, 80, 1, 2).unwrap();
-
+    let mut msgs: Vec<String> = Vec::new();
     // specify the boarders for each of the player windows
     //window.border('|', '|', '-', '-', '+', '+', '+', '+');
-    subwindow.border('|', '|', '-', '-', '-', '-', '-', '-');
+    subwindow.border('|', '|', '-', '-', '+', '+', '+', '+');
     player_window.border('|', '|', '-', '-', '+', '+', '+', '+');
     message_window.border('|', '|', '-', '-', '+', '+', '+', '+');
 
-    //subwindow.mvaddstr(1, 1, "content");
-    //window.draw_box('|', '-');
-    //subwindow.draw_box('|', '-');
-    //player_window.draw_box('|', '-');
-    //message_window.draw_box('|', '-');
-
     subwindow.refresh();
     player_window.refresh();
     message_window.refresh();
 
-    message_window.mvprintw(1, 1, "Welcome to RustHack!");
+    msgs.push(String::from("Welcome to RustHack!"));
+    message_window.mvprintw(1, 1, msgs.get(0).unwrap());
     message_window.refresh();
-    // construct the first level of the game with dots on every square
-    let mut first_level = Level {
-        depth: 0,
-        annotations: String::new(),
-        map: [['.'; 80]; 20],
-        map_obj: arr![arr![Vec::new(); 80]; 20],
-        objects: Vec::new(),
-    };
 
-    // make the player with the correct glyph and window
-    let mut player = Monst {
-        health: 10,
-        power: 1,
-        ac: 10,
-        inventory: Vec::new(),
-        glyph: '@',
-        location: Position { x: 2, y: 3 },
-    };
+    // handle terminal resize events
+    loop {
+        let input = window.getch();
+        match input {
+            Some(Input::KeyResize) => {
+                //pancurses::resize_term(0, 0);
+                //window.border('|', '|', '-', '-', '+', '+', '+', '+');
+                subwindow.erase();
+                player_window.erase();
+                message_window.erase();
 
-    // TODO: this should also be a function that takes objects and stores it in the current level
-    // put the player glyph on the first_level map
-    first_level.map[player.location.x as usize][player.location.y as usize] = player.glyph;
+                //let (x, y) = window.get_max_yx();
+                subwindow.resize(0, 0);
+                player_window.resize(0, 0);
+                message_window.resize(0, 0);
 
-    // put the first level in the dungeon game state
-    current_state.dungeon.push(first_level);
+                // rewrite all window information here and borders
+                message_window.mvprintw(1, 1, msgs.get(0).unwrap());
 
-    // TODO: this is supposed to be a function that takes the current level and prints it to the
-    // screen,player's glyph. change this eventually.
-    populate_board(&subwindow, current_state.dungeon.get(0).unwrap());
-    subwindow.mvaddch(player.location.x, player.location.y, player.glyph);
-    player_window.refresh();
-    // TODO: this has to be a loop of getting the player's input and altering the game accordingly
-    let input = window.getch().unwrap();
+                player_window.mvprintw(1, 1, "test2!");
+                subwindow.mvprintw(1, 1, "test3!");
 
-    match input {
-        // remove player from former location
-        // level.map[player.location.x as usize]
-        Character('h') => player.location.x -= 1,
-        Character('l') => player.location.x += 1,
-        Character('j') => player.location.y -= 1,
-        Character('k') => player.location.x += 1,
-        _ => (),
+                subwindow.border('|', '|', '-', '-', '+', '+', '+', '+');
+                player_window.border('|', '|', '-', '-', '+', '+', '+', '+');
+                message_window.border('|', '|', '-', '-', '+', '+', '+', '+');
+
+                //refresh all the windows so that the changes can be registered
+                subwindow.refresh();
+                player_window.refresh();
+                message_window.refresh();
+            }
+
+            Some(Input::Character('q')) => {
+                break;
+            }
+
+            _ => (),
+        }
     }
 
+    // TODO: save the current game state before deleting the window
+    //
+    // ////////////////////////////////////////////////////////////
+
+    // delete windows and end the game
+    subwindow.delwin();
+    player_window.delwin();
+    message_window.delwin();
     endwin();
-    //debugging
-    println!(
-        "this is the struct representation of the first level {:#?}",
-        current_state.dungeon.get(0)
-    );
-    println!("this is the input {:#?}", input);
-}
-
-fn populate_all_floor(subwindow: &Window, level: &mut Level) {
-    for i in 1..19 {
-        for j in 1..79 {
-            let floor = DungeonFeature {
-                catagory: map::FeatureType::RoomFloor,
-                color: 0,
-                glyph: '.',
-                location: Position { x: i, y: j },
-            };
-
-            level.map_obj[i as usize][j as usize].push(Positionable::Feature(floor));
-        }
-    }
-    subwindow.refresh();
-}
-fn populate_board(subwindow: &Window, level: &Level) {
-    for i in 1..19 {
-        for j in 1..79 {
-            subwindow.mvaddch(i, j, level.map[i as usize][j as usize]);
-        }
-    }
-    subwindow.refresh();
 }
