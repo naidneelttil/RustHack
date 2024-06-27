@@ -7,4 +7,5 @@ edition = "2021"
 
 [dependencies]
 arr_macro = "0.2.1"
-pancurses = "0.17"
+crossterm = "0.27.0"
+ratatui = {version = "0.26.0", features = ["all-widgets"]}
